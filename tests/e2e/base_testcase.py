@@ -90,6 +90,20 @@ class BaseTestCase(unittest.TestCase):
         # Frog robot
         self.assertNotEqual(self.driver.title, "Submitty - Error", "Got Error Page")
 
+        # Check for duplicate ids on a html page
+        all_page_ids = [element.get_attribute('id') for element in self.driver.find_elements_by_xpath("//*[@id]")]
+        seen = set()
+        duplicate_ids = []
+        for element_id in all_page_ids:
+            if id not in seen:
+                seen.add(element_id)
+            else:
+                duplicate_ids.append(element_id)
+
+        if(len(duplicate_ids) > 0):
+            print(duplicate_ids)
+        self.assertEqual(0, len(duplicate_ids))
+
     def log_in(self, url=None, title="Submitty", user_id=None, user_password=None, user_name=None):
         """
         Provides a common function for logging into the site (and ensuring
