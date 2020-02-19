@@ -41,7 +41,7 @@ class BaseTestCase(unittest.TestCase):
         self.driver = None
         """ :type driver: webdriver.Chrome """
         self.options = webdriver.ChromeOptions()
-        self.options.add_argument('--headless')
+        # self.options.add_argument('--headless')
         self.options.add_argument("--disable-extensions")
         self.options.add_argument('--hide-scrollbars')
         self.options.add_argument('--disable-gpu')
@@ -77,15 +77,18 @@ class BaseTestCase(unittest.TestCase):
         self.driver.quit()
         shutil.rmtree(self.download_dir)
 
-    def get(self, url=None, parts=None):
-        if url is None:
+    def get(self, url=None, parts=None, full_url=None):
+        if url is None and full_url is None:
             # Can specify parts = [('semester', 's18'), ...]
             self.assertIsNotNone(parts)
             url = "/index.php?" + urlencode(parts)
 
-        if url[0] != "/":
+        if url is not None and url[0] != "/":
             url = "/" + url
-        self.driver.get(self.test_url + url)
+        if(full_url):
+            self.driver.get(full_url)
+        else:
+           self.driver.get(self.test_url + url)
 
         # Frog robot
         self.assertNotEqual(self.driver.title, "Submitty - Error", "Got Error Page")
