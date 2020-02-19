@@ -92,17 +92,10 @@ class BaseTestCase(unittest.TestCase):
 
         # Check for duplicate ids on a html page
         all_page_ids = [element.get_attribute('id') for element in self.driver.find_elements_by_xpath("//*[@id]")]
-        seen = set()
-        duplicate_ids = []
-        for element_id in all_page_ids:
-            if id not in seen:
-                seen.add(element_id)
-            else:
-                duplicate_ids.append(element_id)
-
-        if(len(duplicate_ids) > 0):
-            print(duplicate_ids)
-        self.assertEqual(0, len(duplicate_ids))
+        no_duplicate_ids = list(set(all_page_ids))
+        all_page_ids.sort()
+        no_duplicate_ids.sort()
+        self.assertListEqual(all_page_ids, no_duplicate_ids)
 
     def log_in(self, url=None, title="Submitty", user_id=None, user_password=None, user_name=None):
         """
